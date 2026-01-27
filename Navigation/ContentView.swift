@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+struct Student: Hashable {
+    var id = UUID()
+    let name: String
+    let age: Int
+}
+
 struct DetailView: View {
     let number: Int
     
@@ -24,12 +30,18 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List(0..<1000) { i in
-                NavigationLink("Tap me") {
-                    // What will happen is that just by showing the NavigationLink
-                    // on the screen it's enough for SwiftUI to automatically create
-                    // the detail view inside it. This is a problem when we have dynamic data
-                    DetailView(number: i)
-                }
+                NavigationLink("Select \(i)", value: i)
+                NavigationLink("Estudiante", value: Student(name: "Alonso", age: 30))
+            }
+            .navigationDestination(for: Int.self) { selection in
+                // Now this view will only created when the NavigationLink attached
+                // to the Integer had been tapped
+                DetailView(number: selection)
+            }
+            .navigationDestination(for: Student.self) { student in
+                // Same here, this view will be loaded only on screen when the NavigationLink
+                // attached to the Student type had been tapped
+                Text("Hello, \(student.name)")
             }
         }
     }
